@@ -1,0 +1,10 @@
+Package: rwod
+Title: R interface to the World Ocean Database
+Version: 0.0.1
+Authors@R: person("Pieter", "Provoost", email = "pieterprovoost@gmail.com", role = c("aut", "cre"))
+Description: R interface to the World Ocean Database.
+Depends: R (>= 3.4.2)
+License: MIT
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 6.0.1

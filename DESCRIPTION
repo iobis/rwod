@@ -3,7 +3,7 @@ Title: R interface to the World Ocean Database
 Version: 0.0.1
 Authors@R: person("Pieter", "Provoost", email = "pieterprovoost@gmail.com", role = c("aut", "cre"))
 Description: R interface to the World Ocean Database.
-Depends: R (>= 3.4.2)
+Depends: R (>= 3.3.2)
 License: MIT
 Encoding: UTF-8
 LazyData: true

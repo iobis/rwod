@@ -38,8 +38,11 @@ wod_csv <- function(filename) {
     else if (startsWith(line, "METADATA")) {
       state <- "metadata"
     }
-    else if (startsWith(line, "BIOLOGY METADATA")) {
+    else if (startsWith(line, "BIOLOGY METADATA,")) {
       state <- "biology metadata"
+    }
+    else if (startsWith(line, "BIOLOGY,")) {
+      state <- "biology"
     }
     else if (startsWith(line, "END OF")) {
       state <- NULL
@@ -133,6 +136,13 @@ wod_csv <- function(filename) {
 
     }
 
+    # parse biology
+
+    else if (state == "biology") {
+      bio <- parse_biology(line)
+
+    }
+
   }
   close(con)
   return(casts)
@@ -141,6 +151,10 @@ wod_csv <- function(filename) {
 parse_meta <- function(line) {
   parts <- trimws(unlist(strsplit(line, ",")))
   parts[parts == ""] <- NA
-  setNames(as.list(parts), c("keyword", "variable", "value", "type", "description"))
+  return(setNames(as.list(parts), c("keyword", "variable", "value", "type", "description")))
+}
+
+parse_biology <- function(line) {
+  return(line)
 }
 

@@ -21,25 +21,31 @@ wod_csv <- function(filename) {
     # start of new cast
 
     if (startsWith(line, "#--------------------")) {
+      state <- NULL
       if (length(cast) > 0) {
         casts <- append(casts, list(cast))
       }
       cast <- list()
     }
 
-    # parse cast header
+    # manage state
 
     else if (startsWith(line, "CAST")) {
       cast_meta <- parse_meta(line)
       cast$cast_number <- cast_meta$value
       state <- "cast"
     }
-
     else if (startsWith(line, "METADATA")) {
       state <- "metadata"
     }
+    else if (startsWith(line, "BIOLOGY METADATA")) {
+      state <- "biology metadata"
+    }
+    else if (startsWith(line, "END OF")) {
+      state <- NULL
+    }
 
-    # parse cast metadata line
+    # parse cast metadata
 
     else if (state == "cast") {
       cast_meta <- parse_meta(line)
@@ -72,6 +78,57 @@ wod_csv <- function(filename) {
       }
       else if (cast_meta$keyword == "Time") {
         cast$time = as.numeric(cast_meta$value)
+      }
+
+    }
+
+    # parse metadata
+
+    else if (state == "metadata") {
+      cast_meta <- parse_meta(line)
+
+      # country
+
+      if (cast_meta$keyword == "Country") {
+        cast$country = cast_meta$value
+      }
+
+      # identifiers
+
+      else if (cast_meta$keyword == "Platform") {
+        cast$platform = cast_meta$value
+      }
+      else if (cast_meta$keyword == "Institute") {
+        cast$institute = cast_meta$value
+      }
+      else if (cast_meta$keyword == "Accession Number") {
+        cast$accession_number = cast_meta$value
+      }
+
+    }
+
+    # parse biology metadata
+
+    else if (state == "biology metadata") {
+      meta <- parse_meta(line)
+
+      if (meta$keyword == "Mesh size") {
+        cast$mesh_size <- c(meta$value, meta$type, meta$description)
+      }
+      else if (meta$keyword == "Type of tow") {
+        cast$tow_type <- c(meta$value, meta$type, meta$description)
+      }
+      else if (meta$keyword == "Gear") {
+        cast$gear <- c(meta$value, meta$type, meta$description)
+      }
+      else if (meta$keyword == "Net mouth area") {
+        cast$net_mouth_area <- c(meta$value, meta$type, meta$description)
+      }
+      else if (meta$keyword == "Preservation method") {
+        cast$preservation_method <- c(meta$value, meta$type, meta$description)
+      }
+      else if (meta$keyword == "Count method") {
+        cast$count_method <- c(meta$value, meta$type, meta$description)
       }
 
     }

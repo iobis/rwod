@@ -42,6 +42,7 @@ wod_csv <- function(filename) {
       state <- "biology metadata"
     }
     else if (startsWith(line, "BIOLOGY,")) {
+      cast$biology <- list()
       state <- "biology"
     }
     else if (startsWith(line, "END OF")) {
@@ -139,8 +140,8 @@ wod_csv <- function(filename) {
     # parse biology
 
     else if (state == "biology") {
-      bio <- parse_biology(line)
-
+      biology <- parse_biology(line)[]
+      cast$biology <- append(cast$biology, list(biology))
     }
 
   }
@@ -155,6 +156,9 @@ parse_meta <- function(line) {
 }
 
 parse_biology <- function(line) {
-  return(line)
+  parts <- trimws(unlist(strsplit(line, ",")))
+  parts <- c(parts[-1], NA)
+  parts[parts == ""] <- NA
+  return(setNames(as.list(parts), c("upper_z", "lower_z", "measurement_type", "original_value", "originator_flag", "original_units", "wod_cbv_value", "cbv_flag", "cbv_units", "calculation_method", "wod_pgc", "itis_tsn", "taxonomic_modifier", "sex", "lifestage", "trophic", "realm", "taxon_shape", "count_method", "min_size", "max_size", "taxon_length", "taxon_width", "taxon_radius", "sampled_volume")))
 }
 
